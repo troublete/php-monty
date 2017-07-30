@@ -9,8 +9,10 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 /**
  * Class Request
  * @package Monty
+ * @author Willi Eßer <willi.esser@troublete.com>
+ * @copyright 2017 Willi Eßer
  */
-class Request
+class Request implements RequestInterface
 {
     /**
      * @var \Symfony\Component\HttpFoundation\Request
@@ -146,7 +148,7 @@ class Request
      * Method to retrieve the URI
      * @return string
      */
-    public function requestUri()
+    public function path()
     {
         return $this->request->getRequestUri();
     }

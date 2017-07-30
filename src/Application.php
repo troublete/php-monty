@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
 /**
  * Class Application
  * @package Monty
+ * @author Willi Eßer <willi.esser@troublete.com>
+ * @copyright 2017 Willi Eßer
  */
 class Application
 {
@@ -15,17 +17,17 @@ class Application
     const APPEND = 1;
 
     /**
-     * @var RouteHandler
+     * @var RouteHandlerInterface
      */
     protected $routeHandler;
 
     /**
-     * @var Request
+     * @var RequestInterface
      */
     protected $request;
 
     /**
-     * @var Response
+     * @var ResponseInterface
      */
     protected $response;
 
@@ -47,19 +49,33 @@ class Application
     /**
      * Application constructor.
      */
-    public function __construct(Response $response = null)
+    public function __construct(
+        RequestInterface $request = null,
+        ResponseInterface $response = null,
+        RouteHandlerInterface $routeHandler = null
+    )
     {
-        $this->routeHandler = new RouteHandler();
-        $this->request = new Request(HttpRequest::createFromGlobals());
-        $this->response = new Response('Oh, well hellow there.');
+        if ($request !== null) {
+            $this->request = $request;
+        } else {
+            $this->request = new Request(HttpRequest::createFromGlobals());
+        }
 
         if ($response !== null) {
             $this->response = $response;
+        } else {
+            $this->response = new Response('Oh, well hellow there.');
+        }
+
+        if ($routeHandler !== null) {
+            $this->routeHandler = $routeHandler;
+        } else {
+            $this->routeHandler = new RouteHandler();
         }
     }
 
     /**
-     * @return Request
+     * @return RequestInterface
      */
     public function getRequest()
     {
@@ -67,7 +83,7 @@ class Application
     }
 
     /**
-     * @return \Monty\Response
+     * @return ResponseInterface
      */
     public function getResponse()
     {
@@ -109,7 +125,7 @@ class Application
             foreach ($this->routeHandler->parseRoute($route) as $regex) {
 
                 // check if regex does match with request uri
-                $regexMatched = preg_match($regex, $this->request->requestUri(), $matches);
+                $regexMatched = preg_match($regex, $this->request->path(), $matches);
                 if ($route === null || $regexMatched) {
 
                     foreach ($matches as $param => $value) {

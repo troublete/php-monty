@@ -6,6 +6,8 @@ use FastRoute\RouteParser\Std;
 /**
  * Class Router
  * @package Monty
+ * @author Willi Eßer <willi.esser@troublete.com>
+ * @copyright 2017 Willi Eßer
  */
 class RouteHandler
 {
