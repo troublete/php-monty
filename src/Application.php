@@ -144,7 +144,7 @@ class Application
                             $response = call_user_func($handler, $this->request, $this->response, ...array_values($matches));
                             $this->request->setPreviousReturn($response);
 
-                            if ($response instanceof Response) {
+                            if ($response instanceof ResponseInterface) {
                                 if ($this->responseSet === false) {
                                     $this->response = $response;
                                     $this->responseSet = true;

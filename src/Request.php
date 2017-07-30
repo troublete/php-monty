@@ -3,7 +3,7 @@ namespace Monty;
 
 use Monty\Exception\PropertyCouldNotBeSetException;
 use Monty\Exception\PropertyNotAvailableException;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -18,11 +18,6 @@ class Request implements RequestInterface
      * @var \Symfony\Component\HttpFoundation\Request
      */
     protected $request;
-
-    /**
-     * @var ContainerBuilder
-     */
-    protected $container;
 
     /**
      * @var ParameterBag
@@ -41,7 +36,6 @@ class Request implements RequestInterface
     public function __construct(\Symfony\Component\HttpFoundation\Request $request)
     {
         $this->request = $request;
-        $this->container = new ContainerBuilder();
         $this->routeParams = new ParameterBag();
     }
 
@@ -64,15 +58,7 @@ class Request implements RequestInterface
             throw new PropertyCouldNotBeSetException();
         }
 
-        switch ($value) {
-            case is_object($value):
-                $this->container->set(...$parameters);
-                break;
-            case is_scalar($value):
-                $this->request->attributes->set(...$parameters);
-                break;
-        }
-
+        $this->request->attributes->set(...$parameters);
         return $this;
     }
 
@@ -90,20 +76,14 @@ class Request implements RequestInterface
             throw new PropertyNotAvailableException();
         }
 
-        $response = $this->request->attributes->get(...$parameters);
-
-        if ($response === null) {
-            $response = $this->container->get(...$parameters);
-        }
-
-        return $response;
+        return $this->request->attributes->get(...$parameters);
     }
 
     /**
      * Method to retrieve the route parameters
      * @return ParameterBag
      */
-    public function parameters()
+    public function routeParameters()
     {
         return $this->routeParams;
     }
@@ -206,15 +186,6 @@ class Request implements RequestInterface
     public function getRawRequest()
     {
         return $this->request;
-    }
-
-    /**
-     * Method to retrieve the raw container to access methods not covered by the common interface
-     * @return ContainerBuilder
-     */
-    public function getRawContainer()
-    {
-        return $this->container;
     }
 
     /**

@@ -17,8 +17,7 @@
     "require": {
         "php": ">=7.0",
         "nikic/fast-route": "~1.2",
-        "symfony/http-foundation": "~3.3",
-        "symfony/dependency-injection": "~3.3"
+        "symfony/http-foundation": "~3.3"
     },
     "require-dev": {
         "codeception/codeception": "~2.3",

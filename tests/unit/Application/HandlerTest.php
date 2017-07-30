@@ -45,8 +45,8 @@ class HandlerTest extends \Codeception\Test\Unit
             function ($req, $res, $routeId, $otherParam) use ($tester) {
                 $tester->assertEquals(123, $routeId);
                 $tester->assertEquals('stuff', $otherParam);
-                $tester->assertEquals(123, $req->parameters()->get('routeId'));
-                $tester->assertEquals('stuff', $req->parameters()->get('otherParam'));
+                $tester->assertEquals(123, $req->routeParameters()->get('routeId'));
+                $tester->assertEquals('stuff', $req->routeParameters()->get('otherParam'));
                 return new Response();
             }
         );

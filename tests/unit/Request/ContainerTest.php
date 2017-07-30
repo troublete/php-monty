@@ -30,7 +30,7 @@ class ContainerTest extends \Codeception\Test\Unit
         $this->request->set('object', new \stdClass());
         $this->request->set('value', '123');
 
-        $this->tester->assertInstanceOf(\stdClass::class, $this->request->getRawContainer()->get('object'));
+        $this->tester->assertInstanceOf(\stdClass::class, $this->request->getRawRequest()->attributes->get('object'));
         $this->tester->assertEquals('123', $this->request->getRawRequest()->attributes->get('value'));
     }
 
@@ -86,17 +86,6 @@ class ContainerTest extends \Codeception\Test\Unit
             PropertyNotAvailableException::class,
             function () use ($request) {
                 $this->request->get(123123);
-            }
-        );
-    }
-
-    public function testGetNotAvailable()
-    {
-        $request = $this->request;
-        $this->tester->expectException(
-            ServiceNotFoundException::class,
-            function () use ($request) {
-                $request->get('notAvailable');
             }
         );
     }
