@@ -4,6 +4,8 @@ namespace Monty\Exception;
 /**
  * Class HandlerCouldNotBeIntegratedException
  * @package Monty\Exception
+ * @author Willi Eßer <willi.esser@troublete.com>
+ * @copyright 2017 Willi Eßer
  */
 class HandlerCouldNotBeIntegratedException extends GeneralException
 {
