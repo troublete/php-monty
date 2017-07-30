@@ -2,6 +2,8 @@
 
 ### *A request centric micro framework with focus on fast response and reliability.*
 
+[![Build Status](https://travis-ci.org/troublete/monty.svg?branch=master)](https://travis-ci.org/troublete/monty)
+
 ## Setup
 
 Here a small example how to minimal setup Monty.
