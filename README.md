@@ -157,12 +157,147 @@ This method retrieves the current response object.
 
 ## Request
 
-### @TODO
+The request object is the center piece of the process. It contains the possibility to append properties and services necessary
+during the request. With that handling the request object stays small and only necessary dependencies are registered when needed.
+
+### Methods
+
+#### $req->clientIp() : string
+
+Method to retrieve the request IP.
+
+#### $req->contentType() : string
+
+Method to retrieve the content-type header value requested.
+
+#### $req->files() : \Symfony\Component\HttpFoundation\FileBag
+
+Method to retrieve the $_FILES parameters.
+
+#### $req->get(...$parameters)
+
+This method can be used to retrieve a property or service set to the request.
+ 
+##### Arguments
+
+| Argument | Type | Description |
+|---|---|---|
+| ...$parameters | *mixed* | Collection of parameters passed a long to the setter method. |
+ 
+##### Example
+ 
+```php
+// ...
+$request->get('logger', new SomeDefault());
+$request->get('property', 'some default value');
+// ...
+```
+
+#### $req->getRawRequest() : \Symfony\Component\HttpFoundation\Request
+
+Method to retrieve the raw request embedded in the \Monty\Request object.
+
+#### $req->httpHost() : string
+
+Method to retrieve the http host including protocol.
+
+#### $req->isMethod($method) : boolean
+
+Method to check if the request method is a specific value.
+
+##### Arguments
+
+| Argument | Type | Description |
+|---|---|---|
+| $method | *string* | Request method to check. |
+
+#### $req->isSecure() : boolean
+
+Method to check if the request sent is secure (HTTPS/SSL).
+
+#### $req->path() : string
+
+Method to retrieve the request path.
+
+#### $req->previousReturn() : mixed
+
+Method to retrieve the return value of the previous handler in the stack.
+
+#### $req->query() : \Symfony\Component\HttpFoundation\ParameterBag
+
+Method to retrieve the $_GET parameters.
+
+#### $req->requestMethod() : string
+
+Method to retrieve the request method.
+
+#### $req->request() : \Symfony\Component\HttpFoundation\ParameterBag
+
+Method to retrieve the $_POST parameters.
+
+#### $req->routeParameters() : \Symfony\Component\HttpFoundation\ParameterBag
+
+Method to retrieve the route parameters values matches by the route handler instance.
+
+#### $req->set(...$parameters) : \Monty\Request
+
+This method can be used to add a class instance or property to the request which can be accessed along the call stack. Usually
+the method takes at least two parameters, first the id of the property/service as string and secondly a scalar or object value.
+
+Arrays are not allowed to be set as request properties to avoid messy code and [resource bulking](https://twitter.com/nikita_ppv/status/847855830821109760).
+
+##### Arguments
+
+| Argument | Type | Description |
+|---|---|---|
+| ...$parameters | *mixed* | Collection of parameters passed a long to the setter method. |
+
+##### Example
+
+```php
+// ...
+$request->set('logger', new SomeLogger()); // valid
+$request->set('property', 'some value'); // valid
+
+$request->set('not_possible', []); // invalid
+// ...
+```
+
+#### $req->setPreviousReturn($value) : \Monty\Request
+
+Method to set the previous handler return.
+
+##### Arguments
+
+| Argument | Type | Description |
+|---|---|---|
+| $value| *mixed* | Return value of the previous handler. |
+
+#### $req->updateRouteParams($params) : \Monty\Request
+
+Method to update the route parameters set to the request.
+
+##### Arguments
+
+| Argument | Type | Description |
+|---|---|---|
+| $params | *array* | Route parameters to be set. |
 
 ## Response
 
-### @TODO
+The response object is generally assumed to resolve itself -- meaning that is should handle how the response defined
+should be rendered in the application response. You can use simply the Symfony Http Component response object, or define
+own ones, which **need** to implement the \Monty\ResponseInterface.
 
-## Contribute
+## Handler
 
-### @TODO
+A handler is defined as a `callable` which is registered in a route handler definition or a middleware.
+
+Handler **can** be, simple lambda functions, closure objects, classes, ... practically anything that is possible to be
+invoked. No limitations here.
+
+
+<hr />
+
+
+© 2017 Willi Eßer 
