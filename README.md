@@ -1,12 +1,10 @@
 # Monty
 
-### *A request centric micro framework with focus on fast response and reliability.*
+### *Sinatra-like framework, focused on fast response and reliability.*
 
 [![Build Status](https://travis-ci.org/troublete/monty.svg?branch=master)](https://travis-ci.org/troublete/monty)
 
-## Setup
-
-Here a small example how to minimal setup Monty.
+## Example Setup
 
 ```
 $ composer require troublete/monty
@@ -31,9 +29,11 @@ $application->get(
 
 ## Routing
 
-The route parsing is based on the [FastRoute](https://github.com/nikic/FastRoute) package created be @nikic, so for the most part it should be possible to define routes as specified by FastRoute. However the dispatching of FastRoute is not used.
+The route parsing is based on the [FastRoute](https://github.com/nikic/FastRoute) package created be @nikic, so for the
+most part it should be possible to define routes as specified by FastRoute.
 Route matching is done via **PCRE** with delimiter set to `@`, so be aware when setting user defined regex parameter matches with `@`.
-Route definitions allow variable parts at the end of a definition marked with `[]`. Since this is possible the matching will try multiple regular expressions in order of descendant complexity and will return on the first pattern match. 
+Route definitions allow variable parts at the end of a definition marked with `[]`. Since this is possible the matching
+will try multiple regular expressions in order of descendant complexity and will return on the first pattern match.
 
 Valid routing
 ```
@@ -50,26 +50,34 @@ Invalid routing
 
 ## Request Handling
 
-The library is created to respond to the first handler that matches a request and early return when this happens.
-In addition it is designed to be request and response centric, following the dogma that one request to a PHP application will be handled once without any asynchronous work.
-Therefore it is not necessary to inject the application instance into every handler, since request and response will be passed along as first method parameters (following parameters are the route parameters if existing) containing all necessary data to properly handle the request.
+Handling definitions will be processed in order of registration as soon as one matches with the received request it will
+dispatch, return and therefore close the process.  
 
-Handlers are always an array of `callable`'s and all of them will be executed synchronously in order on handler match. Middlewares registered to run before or after are integrated in this "callstack".
+In addition Monty is designed to be request and response centric, following the dogma that one request to an application
+will be handled once so everything needed during the lifecycle is included (or should be appended) in the request or response
+object. 
+
+Handlers on a definition are an array of `callable`'s and will be executed synchronously in order on definition match. 
+Middlewares registered to run before or after are integrated in this "call stack".
  
 If a response object is returned in a handler it is interpreted as the process response and can't be reset (but modified).
 
 ## Application
 
-The application is the main component of Monty. It will handle the registration of route handlers, middlewares and additional setup of request and response.
-It generally contains four different use-cases. Accessing the request or response object of the current request process. Registering route handlers and registering middlewares which will be processes during the process lifecycle.
+The application is the main component of Monty. It will handle the registration of route handlers, middlewares and additional
+setup of request and response. It generally contains four different use-cases. Accessing the request or response object
+of the current request process, registering route handlers and registering middlewares which will be executed during
+the lifecycle.
 
-In addition to the use-case methods it also contains an interface of alias methods to make the code your write a lot more understandable and sleek.
+In addition to the use-case methods it also contains an interface of alias methods to make the code your write a lot more
+understandable and sleek.
 
 ### Methods
 
-#### $app->handle($methods, $route, ...$handlers) : mixed
+#### $app->handle($methods, $route, ...$handlers)
 
-This method registers new request handlers for a specific route in regard to an collection of request methods. 
+This method registers new request handlers for a specific route in regard to an collection of request methods on which
+should be dispatched. 
 
 ##### Arguments
 
@@ -78,6 +86,21 @@ This method registers new request handlers for a specific route in regard to an 
 | $methods | *string[]* | Collection of request methods in uppercase. |
 | $route | *string* | The route to which the handlers are registered. |
 | ...$handlers | *callable[]* | Collection of handlers which will be executed. |
+
+##### Example
+
+```php
+// ...
+$app->handle(
+    ['GET'], 
+    '/index', 
+    function ($req, $res) { /*...*/ }, 
+    function ($req, $res) { /*...*/ }, 
+    function ($req, $res) { /*...*/ }
+    // ...
+);
+// ...
+```
 
 ##### Aliases
 
@@ -100,8 +123,22 @@ This method registers additional handlers which will be executed without regard 
 
 | Argument | Type | Description |
 |---|---|---|
-| $placing | *integer* | The reques t lifecycle indication (Application::PREPEND -- before, Application::APPEND -- after) when the handlers should be executed. |
+| $placing | *integer* | The request lifecycle position (Application::PREPEND -- before, Application::APPEND -- after) when the handlers should be executed. |
 | ...$handlers | *callable[]* | Collection of handlers which will be executed. |
+
+##### Example
+
+```php
+// ...
+$app->middleware(
+    \Monty\Application::PREPEND,
+    function ($req, $res) { /*...*/ },
+    function ($req, $res) { /*...*/ },
+    function ($req, $res) { /*...*/ }
+    // ...
+);
+// ...
+```
 
 ##### Aliases
 
