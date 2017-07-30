@@ -4,6 +4,7 @@ namespace Monty;
 use Monty\Exception\HandlerCouldNotBeIntegratedException;
 use Monty\Exception\UnhandledRequestException;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 /**
  * Class Application
@@ -27,7 +28,7 @@ class Application
     protected $request;
 
     /**
-     * @var ResponseInterface
+     * @var HttpResponse
      */
     protected $response;
 
@@ -51,7 +52,7 @@ class Application
      */
     public function __construct(
         RequestInterface $request = null,
-        ResponseInterface $response = null,
+        HttpResponse $response = null,
         RouteHandlerInterface $routeHandler = null
     )
     {
@@ -95,7 +96,7 @@ class Application
      * @param array $methods
      * @param string|null $route
      * @param array ...$handlers
-     * @return mixed|Response
+     * @return mixed|HttpResponse
      */
     public function handle(
         array $methods = [
@@ -147,7 +148,7 @@ class Application
                             $response = call_user_func($handler, $this->request, $this->response, ...array_values($matches));
                             $this->request->setPreviousReturn($response);
 
-                            if ($response instanceof ResponseInterface) {
+                            if ($response instanceof HttpResponse) {
                                 if ($this->responseSet === false) {
                                     $this->response = $response;
                                     $this->responseSet = true;
@@ -174,7 +175,7 @@ class Application
      * Method to handle ANY request
      * @param string|null $route
      * @param array ...$handlers
-     * return mixed{Response
+     * return mixed{HttpResponse
      */
     public function all(
         string $route = null,
@@ -203,7 +204,7 @@ class Application
      * Method to handle a GET request
      * @param string|null $route
      * @param array ...$handlers
-     * @return mixed|Response
+     * @return mixed|HttpResponse
      */
     public function get(
         string $route = null,
@@ -223,7 +224,7 @@ class Application
      * Method to handle a POST request
      * @param string|null $route
      * @param array ...$handlers
-     * @return mixed|Response
+     * @return mixed|HttpResponse
      */
     public function post(
         string $route = null,
@@ -243,7 +244,7 @@ class Application
      * Method to handle a PUT request
      * @param string|null $route
      * @param array ...$handlers
-     * @return mixed|Response
+     * @return mixed|HttpResponse
      */
     public function put(
         string $route = null,
@@ -263,7 +264,7 @@ class Application
      * Method to handle a PATCH request
      * @param string|null $route
      * @param array ...$handlers
-     * @return mixed|Response
+     * @return mixed|HttpResponse
      */
     public function patch(
         string $route = null,
@@ -283,7 +284,7 @@ class Application
      * Method to handle a DELETE request
      * @param string|null $route
      * @param array ...$handlers
-     * @return mixed|Response
+     * @return mixed|HttpResponse
      */
     public function delete(
         string $route = null,
@@ -303,7 +304,7 @@ class Application
      * Method to handle a OPTIONS request
      * @param string|null $route
      * @param array ...$handlers
-     * @return mixed|Response
+     * @return mixed|HttpResponse
      */
     public function options(
         string $route = null,
@@ -323,7 +324,7 @@ class Application
      * Method to handle a HEAD request
      * @param string|null $route
      * @param array ...$handlers
-     * @return mixed|Response
+     * @return mixed|HttpResponse
      */
     public function head(
         string $route = null,
