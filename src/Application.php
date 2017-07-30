@@ -140,6 +140,9 @@ class Application
                         array_merge($this->prepend, $handlers, $this->append) as $handler // merge all request handler
                     )
                     {
+                        if (is_string($handler) && class_exists($handler))
+                            $handler = new $handler();
+
                         if (is_callable($handler)) {
                             $response = call_user_func($handler, $this->request, $this->response, ...array_values($matches));
                             $this->request->setPreviousReturn($response);

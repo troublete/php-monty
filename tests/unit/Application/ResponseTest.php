@@ -60,6 +60,18 @@ class ResponseTest extends \Codeception\Test\Unit
         $this->tester->assertEquals($response->getContent(), 'Another');
     }
 
+    public function testSingleActionClassPositive()
+    {
+        require_once __DIR__ . '/Handler.php';
+
+        $this->app->get(
+            '/route/{id:\d+}/{other}',
+            \Handler::class
+        );
+
+        $this->tester->assertEquals($this->app->getResponse()->getContent(), 'Class');
+    }
+
     public function testSingleActionNegative()
     {
         $app = $this->app;
