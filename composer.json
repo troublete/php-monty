@@ -1,6 +1,6 @@
 {
     "name": "troublete/monty",
-    "description": "A micro request oriented php framework.",
+    "description": "Sinatra-like framework, focused on fast response and reliability.",
     "license": "GPL-2.0",
     "authors": [
         {
