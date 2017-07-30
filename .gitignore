@@ -1,0 +1,5 @@
+!.gitkeep
+tests/_data/*
+tests/_output/*
+vendor
+.idea
