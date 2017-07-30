@@ -42,12 +42,11 @@ class HandlerTest extends \Codeception\Test\Unit
 
         $this->app->get(
             '/route/{routeId:\d+}/{otherParam}',
-            function (Request $request, Response $response, $routeId, $otherParam) use ($tester) {
+            function ($req, $res, $routeId, $otherParam) use ($tester) {
                 $tester->assertEquals(123, $routeId);
                 $tester->assertEquals('stuff', $otherParam);
-                $tester->assertEquals(123, $request->parameters()->get('routeId'));
-                $tester->assertEquals('stuff', $request->parameters()->get('otherParam'));
-                $response = new Response('GET');
+                $tester->assertEquals(123, $req->parameters()->get('routeId'));
+                $tester->assertEquals('stuff', $req->parameters()->get('otherParam'));
                 return new Response();
             }
         );
@@ -59,7 +58,7 @@ class HandlerTest extends \Codeception\Test\Unit
 
         $this->app->post(
             '/route/{routeId:\d+}/{otherParam}',
-            function (Request $request, Response $response, $routeId, $otherParam) use (&$response) {
+            function () use (&$response) {
                 $response = new Response('POST');
                 return new Response();
             }
@@ -75,7 +74,7 @@ class HandlerTest extends \Codeception\Test\Unit
 
         $this->app->get(
             '/another',
-            function (Request $request, Response $response, $routeId, $otherParam) use (&$response) {
+            function () use (&$response) {
                 $response = new Response('second');
                 return new Response();
             }
@@ -85,7 +84,7 @@ class HandlerTest extends \Codeception\Test\Unit
 
         $this->app->get(
             '/route/{routeId:\d+}/{otherParam}',
-            function (Request $request, Response $response, $routeId, $otherParam) use (&$response) {
+            function () use (&$response) {
                 $response = new Response('first');
                 return new Response();
             }
